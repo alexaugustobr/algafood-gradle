@@ -57,5 +57,5 @@ import com.bmuschko.gradle.docker.tasks.image.*
 task buildWithDocker(type: DockerBuildImage) {
 	dependsOn 'copyJarToDocker'
 	inputDir = file('docker') //Local do Dockerfile
-	images.add('test/myapp:latest')
+	images.add('algaworks/algafood:latest') //Nome da imagem
 }
