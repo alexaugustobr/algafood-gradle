@@ -6,24 +6,6 @@ plugins {
 	id 'groovy'
 }
 
-bootJar {
-	archiveName "app.jar" // <- this overrides the generated jar filename
-}
-
-import com.bmuschko.gradle.docker.tasks.image.*
-
-task buildWithDocker(type: DockerBuildImage) {
-	dependsOn 'copyJarToDocker'
-	inputDir = file('docker') //Local padrão do Dockerfile
-	images.add('test/myapp:latest')
-}
-
-task copyJarToDocker(type: Copy) {
-	dependsOn 'bootJar'
-	from 'build/libs/app.jar'
-	into 'docker'
-}
-
 docker {
 	url = 'tcp://localhost:2375'
 }
@@ -58,4 +40,22 @@ dependencies {
 
 test {
 	useJUnitPlatform()
+}
+
+bootJar {
+	archiveName "app.jar" // Renomeia jar
+}
+
+
+task copyJarToDocker(type: Copy) {
+	dependsOn 'bootJar'
+	from 'build/libs/app.jar'
+	into 'docker'
+}
+
+import com.bmuschko.gradle.docker.tasks.image.*
+task buildWithDocker(type: DockerBuildImage) {
+	dependsOn 'copyJarToDocker'
+	inputDir = file('docker') //Local do Dockerfile
+	images.add('test/myapp:latest')
 }
