@@ -38,3 +38,4 @@ out/
 
 ### Ignore Files Project ###
 src/main/resources/ddl.sql
+/docker/app.jar

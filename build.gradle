@@ -2,7 +2,30 @@ plugins {
 	//id 'org.springframework.boot' version '2.5.4'
 	id 'org.springframework.boot' version '2.6.3'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'com.bmuschko.docker-remote-api' version '9.2.1'
 	id 'groovy'
+}
+
+bootJar {
+	archiveName "app.jar" // <- this overrides the generated jar filename
+}
+
+import com.bmuschko.gradle.docker.tasks.image.*
+
+task buildWithDocker(type: DockerBuildImage) {
+	dependsOn 'copyJarToDocker'
+	inputDir = file('docker') //Local padrão do Dockerfile
+	images.add('test/myapp:latest')
+}
+
+task copyJarToDocker(type: Copy) {
+	dependsOn 'bootJar'
+	from 'build/libs/app.jar'
+	into 'docker'
+}
+
+docker {
+	url = 'tcp://localhost:2375'
 }
 
 group = 'br.com.felipelima.api'
